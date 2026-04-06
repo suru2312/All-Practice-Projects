@@ -61,8 +61,8 @@ def main():
         check_food_collision(snake, food, scoreboard)
 
         if check_wall_collision(snake) or check_tail_collision(snake):
-            game_is_on = False
-            scoreboard.game_over()
+            scoreboard.reset()
+            snake.reset()
 
     screen.exitonclick()
 
