@@ -2,8 +2,33 @@ from tkinter import *
 from tkinter import messagebox
 from random import randint, shuffle, choice
 import pyperclip
+import json
 
 FONT_NAME = "Courier"
+# ---------------------------- SEARCH PASSWORDS ------------------------------- #
+def search():
+    website = website_input.get()
+    try:
+        with open("password_db.json", "r") as pwd_db:
+            data = json.load(pwd_db)
+    except FileNotFoundError:
+        messagebox.showerror(title = "Error", message = "No Data File Found.")
+    except json.JSONDecodeError:
+        messagebox.showerror(title="Error", message="Data file is empty or corrupted.")
+    else:
+        if website in data:
+            email = data[website]["email"]
+            password = data[website]["password"]
+            messagebox.showinfo(
+                title = website,
+                message = f"Email : {email}\nPassword : {password}"
+            )
+        else:
+            messagebox.showwarning(
+                title = "Not Found",
+                message = f"No details for {website} exist."
+            )
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -29,17 +54,41 @@ def save_password():
     email = email_input.get()
     password = password_input.get()
     
-    is_ok = False
+    new_data = {
+        website: {
+            "email": email,
+            "password": password,
+        }
+    }
     
     if len(website) > 0 and len(email) > 0 and len(password) > 0:
-        is_ok = messagebox.askokcancel(title = website, message = f"These are the details you entered :\nEmail : {email}\nPassword : {password}\nIs it okay to save?")
-        if is_ok:
-            with open("password_db.txt", "a") as pwd_db:
-                pwd_db.write(f"Website : {website} || Email : {email} || Password : {password}\n\n")
-                website_input.delete(0, END)
-                password_input.delete(0, END)
+        
+        try:
+            with open("password_db.json", "r") as pwd_db:
+                data = json.load(pwd_db)
+        
+        except FileNotFoundError:
+            with open("password_db.json", "w") as pwd_db:
+                json.dump(new_data, pwd_db, indent=4)
+        
+        except json.JSONDecodeError:
+            # File exists but is empty/corrupted
+            data = {}
+            data.update(new_data)
+            with open("password_db.json", "w") as pwd_db:
+                json.dump(data, pwd_db, indent=4)
+        
+        else:
+            data.update(new_data)
+            with open("password_db.json", "w") as pwd_db:
+                json.dump(data, pwd_db, indent=4)
+        
+        finally:
+            website_input.delete(0, END)
+            password_input.delete(0, END)
+    
     else:
-        messagebox.showwarning(title = "Warning", message = f"You can't leave any box empty!")
+        messagebox.showwarning(title="Warning", message="You can't leave any box empty!")
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
@@ -63,8 +112,8 @@ password_label.grid(column = 0, row = 3, padx=5, pady=5, sticky="e")
 
 
 # Input Areas
-website_input = Entry(width = 55)
-website_input.grid(column=1, row=1, columnspan=2, padx=5, pady=5, sticky="w")
+website_input = Entry(width = 33)
+website_input.grid(column=1, row=1, padx=5, pady=5, sticky="w")
 website_input.focus()
 email_input = Entry(width = 55)
 email_input.grid(column=1, row=2, columnspan=2, padx=5, pady=5, sticky="w")
@@ -74,6 +123,8 @@ password_input.grid(column = 1, row = 3, padx=5, pady=5, sticky="w")
 
 
 # Buttons
+search_button = Button(text = "Search", command = search, width = 16)
+search_button.grid(column = 2, row = 1, padx=5, pady=5, sticky="w")
 generate_password_button = Button(text = "Generate Password", command = generate_password, width = 16)
 generate_password_button.grid(column = 2, row = 3, padx=5, pady=5, sticky="w")
 add_button = Button(text = "Add to Database", command = save_password, width = 47)
