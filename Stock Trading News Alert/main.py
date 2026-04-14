@@ -46,7 +46,7 @@ diff_percent = (difference / day_before_close) * 100
 symbol = "🔺" if yesterday_close > day_before_close else "🔻"
 
 # -------------------- STEP 2: GET NEWS -------------------- #
-if diff_percent > 5:   # ✅ Correct threshold
+if diff_percent > 0:   # ✅ Correct threshold
     
     news_params = {
         "apiKey": NEWS_API_KEY,
@@ -66,10 +66,10 @@ if diff_percent > 5:   # ✅ Correct threshold
 
     # -------------------- FORMAT ARTICLES -------------------- #
     formatted_articles = [
-        f"{STOCK_NAME}: {symbol}{round(diff_percent, 2)}%\n"
-        f"Headline: {article['title']}\n"
-        f"Brief: {article['description']}"
-        for article in articles
+    f"{STOCK_NAME}: {symbol}{round(diff_percent, 2)}%\n"
+    f"Headline: {article['title']}\n"
+    f"Brief: {article['description'] or article['content'] or 'No description available'}"
+    for article in articles
     ]
 
     # -------------------- STEP 3: SEND SMS -------------------- #
