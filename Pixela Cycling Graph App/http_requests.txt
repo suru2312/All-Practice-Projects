@@ -1,0 +1,9 @@
+# HTTP Requests
+
+"""GET""" # - requests.get() Here we ask the external system for a piece of data and they give that to us in response.
+
+"""POST""" # - requests.post() Here we give the data to an external system but sometimes not keen on recieving back the data other than the status of data transfer.
+
+"""PUT""" # - requests.put() It helps in updating the data in the external systems.
+
+"""DELETE""" # - requests.delete() It helps in deleting the data in the external systems.
