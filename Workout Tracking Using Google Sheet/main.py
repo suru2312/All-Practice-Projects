@@ -1,6 +1,9 @@
 import requests
-import os
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Your Personal data
 GENDER = "male"
