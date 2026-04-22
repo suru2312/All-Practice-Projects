@@ -1,0 +1,12 @@
+API Key Created!
+Save this key - it will only be shown once
+
+Important: Copy and save this API key now. For security reasons, you won't be able to see it again.
+API Key
+nix_live_OsAL34vf1JJWrxQuqWtK5eLkgW11L7pN
+App ID
+app_623fa4787cd146a18f4c9619
+Use these credentials in your API requests by including them as headers:
+
+x-app-id: app_623fa4787cd146a18f4c9619
+x-app-key: nix_live_OsAL34vf1JJWrxQuqWtK5eLkgW11L7pN
